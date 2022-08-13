@@ -8,12 +8,12 @@
 import Foundation
 
 class SinhVien {
-    var ten : String
-    var tuoi : Int
-    var sdt  : String?
+    var ten: String
+    var tuoi: Int
+    var sdt: String?
     
 
-    init (ten : String, tuoi: Int, sdt: String? = nil){
+    init (ten: String, tuoi: Int, sdt: String? = nil){
         self.ten = ten
         self.tuoi = tuoi
         self.sdt = sdt
@@ -24,50 +24,73 @@ class SinhVien {
 }
 
 class Lop {
-    var ten : String
+    var ten: String
     var tenGiaoVien: String
     var danhSachSinhVien: [SinhVien]
     
-    init (ten :String, tenGiaoVien: String, danhSachSinhVien: [SinhVien]){
+    init (ten: String, tenGiaoVien: String, danhSachSinhVien: [SinhVien]) {
         self.ten = ten
         self.tenGiaoVien = tenGiaoVien
         self.danhSachSinhVien = danhSachSinhVien
     }
     
-    func themSinhVien(ten: String, tuoi: Int, sdt: String? = nil){
+    func themSinhVien(ten: String, tuoi: Int, sdt: String? = nil) {
         self.danhSachSinhVien.append(SinhVien(ten: ten, tuoi: tuoi, sdt: sdt))
     }
     
-    func updateTenGv(ten: String){
+    func updateTenGv(ten: String) {
         self.tenGiaoVien = ten
     }
     
-    func searchSv(ten: String) -> SinhVien? {
-        for sinhVien in self.danhSachSinhVien{
+    func searchSv(by ten: String) -> [SinhVien] {
+        var searchResult = [SinhVien]()
+        if self.danhSachSinhVien.isEmpty {
+            return []
+        }
+        for sinhVien in self.danhSachSinhVien {
             if sinhVien.ten == ten {
-                return sinhVien
+                searchResult.append(sinhVien)
             }
         }
-        return nil
+        return searchResult
     }
     
-    func updateSv(ten: String, tenMoi: String) -> String{
-        if searchSv(ten: ten) != nil {
-           var sinhVien = searchSv(ten: ten)!
+    func updateSv(by ten: String, tenMoi: String) -> String {
+        if searchSv(by: ten).isEmpty {
+            return "Student not found!"
+        }
+        for sinhVien in searchSv(by: ten) {
             sinhVien.ten = tenMoi
-            return "Update Successfully!"
         }
-       return "Student not found!"
+        return "Update Successfully!"
     }
     
-    func deleteSv(ten: String) -> String{
-        if searchSv(ten: ten) != nil {
-            danhSachSinhVien.removeAll { sinhVien in
-                sinhVien.ten == ten
-            }
-            return "Delete successfully!"
+    func deleteSv(by ten: String) -> String {
+        if searchSv(by: ten).isEmpty {
+            return "Student not found!"
         }
-        return "Student not found!"
+        danhSachSinhVien.removeAll { sinhVien in
+            sinhVien.ten == ten
+        }
+        return "Delete successfully!"
+    }
+    
+    func getInfoClass() -> String {
+        return "Lớp học \(self.ten), giáo viên \(self.tenGiaoVien), số sinh viên \(danhSachSinhVien.count) "
+    }
+    
+    func getInfoSinhVien() -> [String] {
+        var results = [String]()
+        for sinhVien in danhSachSinhVien {
+            var studentInfo = "Tên sv: \(sinhVien.ten), tuổi: \(sinhVien.tuoi)"
+            if (sinhVien.sdt == nil) {
+                results.append(studentInfo)
+            } else {
+                studentInfo += " sdt: \(sinhVien.sdt ?? "")"
+                results.append(studentInfo)
+            }
+        }
+        return results
     }
 }
 
@@ -85,10 +108,10 @@ lop.themSinhVien(ten: "Thanh", tuoi: 20, sdt: "0168")
 lop.updateTenGv(ten: "Quỳnh Teacher")
 
 
-print (lop.updateSv(ten: "Nam", tenMoi: "Đông"))
-print(lop.deleteSv(ten: "Hoàng"))
+print (lop.updateSv(by: "Nam", tenMoi: "Đông"))
+print(lop.deleteSv(by: "Hoàng"))
 
-print(lop.ten, lop.tenGiaoVien)
-for sinhVien in lop.danhSachSinhVien {
-    print(sinhVien.ten, sinhVien.tuoi, sinhVien.sdt)
+print(lop.getInfoClass())
+for info in lop.getInfoSinhVien() {
+    print(info)
 }
