@@ -42,35 +42,32 @@ class Lop {
         self.tenGiaoVien = ten
     }
     
-    func searchSv(ten: String) -> Bool{
+    func searchSv(ten: String) -> SinhVien? {
         for sinhVien in self.danhSachSinhVien{
             if sinhVien.ten == ten {
-                return true
+                return sinhVien
             }
         }
-        return false
+        return nil
     }
     
-    func updateSv(ten: String, tenMoi: String) -> Bool {
-        if searchSv(ten: ten) {
-            for sinhVien in self.danhSachSinhVien{
-                if sinhVien.ten == ten {
-                    sinhVien.ten = tenMoi
-                    return true
-                }
-            }
+    func updateSv(ten: String, tenMoi: String) -> String{
+        if searchSv(ten: ten) != nil {
+           var sinhVien = searchSv(ten: ten)!
+            sinhVien.ten = tenMoi
+            return "Update Successfully!"
         }
-        return false
+       return "Student not found!"
     }
     
-    func deleteSv(ten: String) -> Bool{
-        if searchSv(ten: ten) {
+    func deleteSv(ten: String) -> String{
+        if searchSv(ten: ten) != nil {
             danhSachSinhVien.removeAll { sinhVien in
-                return sinhVien.ten == ten
+                sinhVien.ten == ten
             }
-            return true
+            return "Delete successfully!"
         }
-        return false
+        return "Student not found!"
     }
 }
 
@@ -87,17 +84,9 @@ lop.themSinhVien(ten: "Thanh", tuoi: 20, sdt: "0168")
 
 lop.updateTenGv(ten: "Quỳnh Teacher")
 
-if lop.updateSv(ten: "Nam", tenMoi: "Đông") {
-    print("Update Successfully")
-} else {
-    print("không có tên cần tìm")
-}
 
-if lop.deleteSv(ten: "Đức"){
-    print("Delete Successfully")
-} else {
-    print("Không có tên cần xoá")
-}
+print (lop.updateSv(ten: "Nam", tenMoi: "Đông"))
+print(lop.deleteSv(ten: "Hoàng"))
 
 print(lop.ten, lop.tenGiaoVien)
 for sinhVien in lop.danhSachSinhVien {
